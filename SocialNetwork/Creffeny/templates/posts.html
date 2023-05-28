@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/js/post.js"></script>
+    <script src="/static/js/jquery-3.6.4.js"></script>
+</head>
+<body>
+<h2>{{ post.title }}</h2>
+<p>{{ post.body }}</p>
+<h5>{{ post.user.username }}</h5>
+<a id="like" data-url="/post{{ post.id }}/"><img id="img" src="" width="50"></a><p id="likes">{{ like_amount }}</p>
+
+<div id="comments">
+    {% for c in comments %}
+    <p class="comment">{{ c.0.user.username }}<br>{{ c.0.body }} <a class="comment_like" id='{{ c.id }}' data-url="/post{{ post.id }}/" data-id="{{ c.id }}">Like</a> {{ c.1 }}</p>
+    {% endfor %}
+</div>
+
+    {% csrf_token %}
+    <input type="text" id="id_body">
+    <button id="add" data-url="/post{{ post.id }}/">Add</button>
+
+</body>
+</html>
