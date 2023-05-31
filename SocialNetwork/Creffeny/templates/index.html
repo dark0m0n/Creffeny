@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <a href="/logout">Logout</a>
+    <h1>{{ user.username }}</h1>
+    {% for p in posts %}
+        <a href="/post{{ p.id }}">{{ p.title }}</a>
+    {% endfor %}
+</body>
+</html>
