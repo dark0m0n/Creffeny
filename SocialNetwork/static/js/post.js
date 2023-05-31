@@ -39,27 +39,6 @@ function addLike(){
     })
 }
 
-$(function(){
-    $(document).click(function(event) {
-        let btn = $(event.target);
-        if (btn.attr('class') == 'comment_like') {
-            $.ajax(btn.data('url'),{
-                'type': 'POST',
-                'async': true,
-                'dataType': 'json',
-                'data': {
-                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
-                    'id_comment': btn.data('id')
-                },
-                'success': function(data){
-                    document.getElementById('likes').innerHTML = data['like_amount'];
-                }
-            })
-        }
-    })
-
-})
-
 $(document).ready(function(){
     addComment();
     addLike();

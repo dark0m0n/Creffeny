@@ -1,0 +1,21 @@
+body {
+    background-color: rgb(54, 54, 54);
+}
+
+label {
+    color: #fff;
+}
+
+form {
+    margin: auto;
+    width: 15%;
+    padding-top: 15%;
+}
+
+input {
+    border-radius: 15px;
+}
+
+.submit {
+    margin-left: 45px;
+}
