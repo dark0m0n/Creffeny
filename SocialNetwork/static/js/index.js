@@ -10,6 +10,7 @@ function addText(){
 
         formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
         formData.append('file', document.getElementById('select_photo').files[0]);
+        formData.append('formd', true);
 
         $.ajax('/addpost/', {
             'type': 'POST',
@@ -28,7 +29,26 @@ function addText(){
     })
 }
 
+function createPost(){
+    $('.submit').click(function(){
+      $.ajax('/', {
+        'type': 'POST',
+        'async': true,
+        'dataType': 'json',
+        'data': {
+            'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+            'title': $('#post_title').val(),
+            'body': $('#post_text').val()
+        },
+        'success': function(data){
+            window.location.reload();
+        }
+    })  
+    })
+}
+
 $(document).ready(function() {
     addPost();
     addText();
+    createPost();
 })

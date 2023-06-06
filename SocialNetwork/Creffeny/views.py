@@ -12,6 +12,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LogoutView, LoginView
 
+import time
+
 
 class IndexView(ListView):
     model = Post
@@ -25,13 +27,24 @@ class IndexView(ListView):
         return context
 
 
-class HomeView(TemplateView):
+class AddPostView(TemplateView):
     def post(self, request):
-        print(request.POST)
         data = request.FILES['file']
-        with open('static/post_images/upload.png', 'wb') as file:
-            file.write(data.read())
-            return JsonResponse('/static/post_images/upload.png', safe=False)
+        post = request.POST
+        user = self.request.user
+        now = round(time.time()*10000)
+        if 'formd' in post.keys():
+            with open(f'static/post_images/{now}.png', 'wb') as file:
+                file.write(data.read())
+                return JsonResponse(f'/static/post_images/{now}.png', safe=False)
+        
+        if 'title' in post.keys() and 'body' in post.keys():
+            with open(f'static/post_images/{now}.png', 'r') as file:
+                p = Post(user=user,
+                    image=file,
+                    title=post['title'],
+                    body=post['body'])
+                p.save()       
 
 
 class PostView(TemplateView):
@@ -106,8 +119,3 @@ class ProfileView(TemplateView):
         context['posts'] = Post.objects.filter(user=user)
         context['title'] = 'Profile'
         return context
-
-
-class AddPost(CreateView):
-    model = Post
-    template_name = 'add_post.html'
