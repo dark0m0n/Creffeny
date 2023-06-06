@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from Creffeny.models import Post, Comment, Like
-from Creffeny.forms import Registration
+from Creffeny.forms import Registration, LoginForm
 
 from django.urls import reverse_lazy
 from django.http import JsonResponse
@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView, LoginView
 
 
 class IndexView(ListView):
@@ -23,11 +23,13 @@ class IndexView(ListView):
         context['title'] = 'Creffeny'
         context['user'] = self.request.user
         return context
-    
-    def post(self, request, *args, **kwargs):
+
+
+class HomeView(TemplateView):
+    def post(self, request):
         print(request.POST)
         data = request.FILES['file']
-        with open('/static/post_images/upload.png', 'wb') as file:
+        with open('static/post_images/upload.png', 'wb') as file:
             file.write(data.read())
             return JsonResponse('/static/post_images/upload.png', safe=False)
 
@@ -85,6 +87,7 @@ class Register(CreateView):
 
     
 class Login(LoginView):
+    form_class = LoginForm
     template_name = 'login.html'
     redirect_authenticated_user = True
 
