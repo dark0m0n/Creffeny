@@ -1,10 +1,6 @@
-body {
-    background-color: rgb(54, 54, 54);
-}
+html { background-color: #333; }
 
-label {
-    color: #fff;
-}
+label { display: none; }
 
 form {
     margin: auto;
@@ -13,9 +9,16 @@ form {
 }
 
 input {
+    border-style: solid;
     border-radius: 15px;
+    border-width: 7px;
+    text-align: center;
 }
 
-.submit {
-    margin-left: 45px;
-}
+#id_email { transform: translate(0px, -15px); }
+
+#id_password1 { transform: translate(0px, -30px); }
+
+#id_password2 { transform: translate(0px, -45px); }
+
+.submit { transform: translate(70px, -30px); }

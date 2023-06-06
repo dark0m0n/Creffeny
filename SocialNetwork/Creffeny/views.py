@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from Creffeny.models import Post, Comment, Like
-from Creffeny.forms import Registration, PostForm
+from Creffeny.forms import Registration
 
 from django.urls import reverse_lazy
 from django.http import JsonResponse
@@ -23,6 +23,13 @@ class IndexView(ListView):
         context['title'] = 'Creffeny'
         context['user'] = self.request.user
         return context
+    
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        data = request.FILES['file']
+        with open('/static/post_images/upload.png', 'wb') as file:
+            file.write(data.read())
+            return JsonResponse('/static/post_images/upload.png', safe=False)
 
 
 class PostView(TemplateView):
@@ -100,4 +107,4 @@ class ProfileView(TemplateView):
 
 class AddPost(CreateView):
     model = Post
-    
+    template_name = 'add_post.html'

@@ -2,26 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/static/css/index.css">
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/index.js"></script>
+    <link rel="stylesheet" href="/static/css/home.css">
     <title>{{ title }}</title>
 </head>
 <body>
-    <div id="navigator">
+    <div id="header">
+        <h1 id="Creffeny">Creffeny</h1>
+    </div>
+    <div id="navigation">
         <ul>
-            <li id="nhome"><a href="{% url 'home' %}">Головна</a></li>
+            <li id="ico"><img src="" width="25px"></li>
+            <li id="nhome"><a href="{% url 'home' %}">Home</a></li>
+            <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
             <li id="nlog"><a href="{% url 'login' %}">Log in</a></li>
-            <li id="add_post"><a>Add Post</a></li>
+            <li id="nreg"><a href="{% url 'register' %}">Sing up</a></li>
+            <li id="nout"><a href="/logout">Logout</a></li>
         </ul>
     </div>
-    <a href="/logout">Logout</a>
     <h1>{{ user.username }}</h1>
-    {% for p in posts %}
-        <a href="/post{{ p.id }}">{{ p.title }}</a>
-    {% endfor %}
-    <dialog>
-        
-    </dialog>
+    {% csrf_token %}
+    <div id="content">
+        {% for p in posts %}
+            <a href="/post{{ p.id }}"><img width="250px" src="/{{ p.image }}"><br>{{ p.title }}</a>
+        {% endfor %}
+        <dialog id="add_photo">
+            <input type="file" id="select_photo">
+        </dialog>
+        <dialog id="add_text">
+            <img src="" id="add_img" width="500px">
+            <textarea cols="30" rows="7"></textarea>
+        </dialog>
+    </div>
 </body>
 </html>

@@ -128,6 +128,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
