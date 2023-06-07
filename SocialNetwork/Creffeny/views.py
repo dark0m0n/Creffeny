@@ -6,6 +6,7 @@ from Creffeny.forms import Registration, LoginForm
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.core.files import File
 
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
@@ -13,6 +14,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LogoutView, LoginView
 
 import time
+from pathlib import Path
 
 
 class IndexView(ListView):
@@ -29,22 +31,22 @@ class IndexView(ListView):
 
 class AddPostView(TemplateView):
     def post(self, request):
-        data = request.FILES['file']
-        post = request.POST
-        user = self.request.user
         now = round(time.time()*10000)
-        if 'formd' in post.keys():
-            with open(f'static/post_images/{now}.png', 'wb') as file:
+        image = f'static/post_images/{now}.png'
+        data = request.POST
+        if 'body' in data.keys():
+            body = data['body']
+            title = data['title']
+            path = Path(image)
+            with path.open(mode='rb') as f:
+                file = File(f, name=path.name)
+                post = Post(body=body, image=file, title=title, user=self.request.user)
+                post.save()
+        else:
+            data = request.FILES['file']
+            with open(image, 'wb') as file:
                 file.write(data.read())
-                return JsonResponse(f'/static/post_images/{now}.png', safe=False)
-        
-        if 'title' in post.keys() and 'body' in post.keys():
-            with open(f'static/post_images/{now}.png', 'r') as file:
-                p = Post(user=user,
-                    image=file,
-                    title=post['title'],
-                    body=post['body'])
-                p.save()       
+        return JsonResponse(image, safe=False)
 
 
 class PostView(TemplateView):

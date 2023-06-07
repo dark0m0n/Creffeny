@@ -48,11 +48,11 @@ a:link { text-decoration: none; }
 
 dialog
 {
-    width: 775px;
-    height: 525px;
+    width: 875px;
+    height: 575px;
     border-radius: 50px;
     background-color: rgb(65, 65, 65);
-    transform: translate(0px, -100px);
+    transform: translate(0px, -200px);
 }
 
 #add_text { align-items: center; }
@@ -62,7 +62,7 @@ dialog
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 40%;
+    width: auto;
 }
 
 #post_text
@@ -95,4 +95,16 @@ dialog
     width: 75px;
     border-radius: 15px;
     font: normal 16px "Trebuchet MS", "Lucida Grande", Verdana, Georgia, Sans-Serif;
+}
+
+#post_title
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    border-radius: 15px;
+    background-color: rgb(129, 126, 126);
+    text-align: center;
+    width: 150px;
 }
