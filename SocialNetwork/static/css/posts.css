@@ -1,0 +1,55 @@
+html
+{
+    background-color: #333;
+    font: normal 17px "Trebuchet MS", "Lucida Grande", Verdana, Georgia, Sans-Serif;
+    color: white;
+}
+
+#content
+{
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+#header { width: 100%; }
+
+#Creffeny 
+{
+    text-align: center;
+    font-family: 'Lucida Handwriting', cursive;
+    font-size: 45px;
+}
+
+h2 { text-align: center; font-size: 30px; }
+
+h5 { font-size: 30px; text-align: end; }
+
+#post_img { display: block; margin: auto; }
+
+#post_body { text-align: center; }
+
+#likes
+{
+    transform: translate(40px, -40px);
+}
+
+#id_body
+{
+    background-color: rgb(129, 126, 126);
+    border-radius: 15px;
+    border-width: 5px;
+    border-color: rgb(129, 126, 126);
+    width: 250px;
+    height: 30px;
+    color: white;
+}
+
+#add
+{
+    background-color: rgb(100, 99, 99);
+    border-radius: 10px;
+    border-width: 12px;
+    border-color: rgb(100, 99, 99);
+    transform: translate(-20px, 0px);
+    color: white;
+}

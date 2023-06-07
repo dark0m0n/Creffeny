@@ -2,25 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{{ post.title }} - Creffeny</title>
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/post.js"></script>
+    <link rel="stylesheet" href="/static/css/posts.css">
 </head>
 <body>
-    <h2>{{ post.title }}</h2>
-    <img src="/{{ post.image }}" width="500px">
-    <p>{{ post.body }}</p>
-    <h5>{{ post.user.username }}</h5>
-    <a id="like" data-url="/post{{ post.id }}/"><img id="like_img" src="" width="25"></a><p id="likes">{{ like_amount }}</p>
-
-    <div id="comments">
-        {% for c in comments %}
-        <p class="comment">{{ c.user.username }}<br>{{ c.body }} <a class="comment_like" id='{{ c.id }}' data-url="/post{{ post.id }}/" data-id="{{ c.id }}">Like</a></p>
-        {% endfor %}
+    <div id="header">
+        <h1 id="Creffeny">Creffeny</h1>
     </div>
+    <div id="content">
+        <h5>{{ post.user.username }}</h5>
+        <h2>{{ post.title }}</h2>
+        <img src="/{{ post.image }}" height="400px" id="post_img"><br>
+        <p id="post_body">{{ post.body }}</p>
+        <a id="like" data-url="/post{{ post.id }}/"><img id="like_img" src="" width="35px"></a>
+        <p id="likes">{{ like_amount }}</p>
 
-    {% csrf_token %}
-    <input type="text" id="id_body">
-    <button id="add" data-url="/post{{ post.id }}/">Add</button>
+        <div id="comments">
+            {% for c in comments %}
+            <p class="comment">{{ c.user.username }}<br>{{ c.body }} <a class="comment_like" id='{{ c.id }}' data-url="/post{{ post.id }}/" data-id="{{ c.id }}">Like</a></p>
+            {% endfor %}
+        </div>
+
+        {% csrf_token %}
+        <input type="text" id="id_body" placeholder="Add Comment">
+        <button id="add" data-url="/post{{ post.id }}/">Add</button>
+    </div>
 </body>
 </html>
