@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
-from Creffeny.models import Post, Comment, Like
+from Creffeny.models import Post, Comment, Like, ProfileImage
 from Creffeny.forms import Registration, LoginForm
+from django.contrib.auth.models import User
 
 from django.urls import reverse_lazy
 from django.http import JsonResponse
@@ -13,7 +14,6 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LogoutView, LoginView
 
-import time
 from pathlib import Path
 
 
@@ -26,13 +26,15 @@ class IndexView(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creffeny'
         context['user'] = self.request.user
+        context['profile'] = ProfileImage.objects.get(user=self.request.user)
         return context
 
 
 class AddPostView(TemplateView):
     def post(self, request):
-        now = round(time.time()*10000)
-        image = f'static/post_images/{now}.png'
+        user = self.request.user
+        posts_len = len(Post.objects.all())
+        image = f'static/post_images/{user}_{posts_len}.png'
         data = request.POST
         if 'body' in data.keys():
             body = data['body']
@@ -40,9 +42,9 @@ class AddPostView(TemplateView):
             path = Path(image)
             with path.open(mode='rb') as f:
                 file = File(f, name=path.name)
-                post = Post(body=body, image=file, title=title, user=self.request.user)
+                post = Post(body=body, image=file, title=title, user=user)
                 post.save()
-        else:
+        if 'formd' in data.keys():
             data = request.FILES['file']
             with open(image, 'wb') as file:
                 file.write(data.read())
@@ -102,9 +104,9 @@ class Register(CreateView):
 
     
 class Login(LoginView):
-    form_class = LoginForm
     template_name = 'login.html'
     redirect_authenticated_user = True
+    form_class = LoginForm
 
 
 class Logout(LogoutView):
@@ -116,8 +118,11 @@ class ProfileView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
+        user = User.objects.get(username=self.kwargs['username'])
         context['user'] = user
         context['posts'] = Post.objects.filter(user=user)
-        context['title'] = 'Profile'
+        context['profile'] = ProfileImage.objects.get(user=user)
         return context
+
+    def post(self, request, **kwargs):
+        pass

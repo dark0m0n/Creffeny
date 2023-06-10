@@ -13,12 +13,6 @@ class Registration(UserCreationForm):
             }),
             'email': forms.EmailInput(attrs={
                 'placeholder': 'Email'
-            }),
-            'password1': forms.PasswordInput(attrs={
-                'placeholder': 'Password'
-            }),
-            'password2': forms.PasswordInput(attrs={
-                'placeholder': 'Confirm Password'
             })
         }
 
@@ -29,7 +23,8 @@ class LoginForm(AuthenticationForm):
         fields = ['username', 'password']
         widgets = {
             'username': forms.TextInput(attrs={
-                'placeholder': 'Username'
+                'placeholder': 'Username',
+                'class': 'hello'
             }),
             'password': forms.PasswordInput(attrs={
                 'placeholder': 'Password'

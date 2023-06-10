@@ -5,11 +5,16 @@
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/index.js"></script>
     <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="icon" type="image/x-icon" href="/static/icons/sociable_saturn.png">
     <title>{{ title }}</title>
 </head>
 <body>
     <div id="header">
-        <h1 id="Creffeny">Creffeny</h1>
+        <div class="Creffeny">
+            <a href="{% url 'home' %}">
+                <img src="/static/icons/sociable_saturn.png" alt="Creffeny" id="Creffeny">
+            </a>
+        </div>
     </div>
     <div id="navigation">
         <ul>
@@ -19,23 +24,32 @@
             <li id="nlog"><a href="{% url 'login' %}">Log in</a></li>
             <li id="nreg"><a href="{% url 'register' %}">Sing up</a></li>
             <li id="nout"><a href="/logout">Logout</a></li>
+            <li id="profile">
+                <a href="/profile/{{ user.username }}">
+                    <img id="profile_image" src="/{{ profile.profile_image }}" height="50px" width="50px">
+                </a>
+            </li>
         </ul>
     </div>
-    <h1>{{ user.username }}</h1>
     {% csrf_token %}
     <div id="content">
         {% for p in posts %}
-            <a href="/post{{ p.id }}"><img width="250px" src="/{{ p.image }}"><br>{{ p.title }}</a>
+        <span>
+            <a href="/post/{{ p.id }}">
+                <img height="250px" src="/{{ p.image }}">
+                <p>{{ p.title }}</p>
+            </a>
+        </span>
         {% endfor %}
-        <dialog id="add_photo">
-            <input type="file" id="select_photo">
-        </dialog>
-        <dialog id="add_text">
-            <img src="" id="add_img" height="315px"><br>
-            <input type="text" id="post_title" placeholder="Post Title"><br>
-            <textarea cols="40" rows="7" id="post_text"></textarea>
-            <input class="submit" type="submit" value="Post">
-        </dialog>
     </div>
+    <dialog id="add_photo">
+        <input type="file" id="select_photo">
+    </dialog>
+    <dialog id="add_text">
+        <img src="" id="add_img" height="315px"><br>
+        <input type="text" id="post_title" placeholder="Post Title"><br>
+        <textarea cols="40" rows="7" id="post_text"></textarea>
+        <input class="submit" type="submit" value="Post">
+    </dialog>
 </body>
 </html>

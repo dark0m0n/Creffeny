@@ -31,7 +31,7 @@ function addText(){
 
 function createPost(){
     $('.submit').click(function(){
-      $.ajax('/', {
+      $.ajax('/addpost/', {
         'type': 'POST',
         'async': true,
         'dataType': 'json',

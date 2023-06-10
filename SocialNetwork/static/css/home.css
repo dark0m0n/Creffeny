@@ -18,7 +18,7 @@ a:link { text-decoration: none; }
 {
     list-style-type: none;
     margin: auto;
-    width: 35%;
+    width: 40%;
     background: none;
     border-width: 0;
 }
@@ -33,18 +33,24 @@ a:link { text-decoration: none; }
 
 #header { width: 100%; }
 
-#Creffeny 
+#Creffeny { height: 250px; }
+
+.Creffeny
 {
-    text-align: center;
-    font-family: 'Lucida Handwriting', cursive;
-    font-size: 45px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 270px;
 }
 
 #content
 {
     margin-left: 100px;
     margin-right: 100px;
+    padding-top: 20px;
 }
+
+span { display: inline-block; }
 
 dialog
 {
@@ -52,7 +58,8 @@ dialog
     height: 575px;
     border-radius: 50px;
     background-color: rgb(65, 65, 65);
-    transform: translate(0px, -200px);
+    top: 0%;
+    transform: translate(0px, 200px);
 }
 
 #add_text { align-items: center; }
@@ -107,4 +114,14 @@ dialog
     background-color: rgb(129, 126, 126);
     text-align: center;
     width: 150px;
+}
+
+#profile_image
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 500%;
+    overflow: hidden;
+    object-fit: cover;
 }

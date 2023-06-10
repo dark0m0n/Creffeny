@@ -6,28 +6,43 @@
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/post.js"></script>
     <link rel="stylesheet" href="/static/css/posts.css">
+    <link rel="icon" type="image/x-icon" href="/static/icons/sociable_saturn.png">
 </head>
 <body>
     <div id="header">
-        <h1 id="Creffeny">Creffeny</h1>
+        <div class="Creffeny">
+            <a href="{% url 'home' %}">
+                <img src="/static/icons/sociable_saturn.png" alt="Creffeny" id="Creffeny">
+            </a>
+        </div>
+    </div>
+    <div id="navigation">
+        <ul>
+            <li id="ico"><img src="" width="25px"></li>
+            <li id="nhome"><a href="{% url 'home' %}">Home</a></li>
+            <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
+            <li id="nlog"><a href="{% url 'login' %}">Log in</a></li>
+            <li id="nreg"><a href="{% url 'register' %}">Sing up</a></li>
+            <li id="nout"><a href="/logout">Logout</a></li>
+        </ul>
     </div>
     <div id="content">
         <h5>{{ post.user.username }}</h5>
         <h2>{{ post.title }}</h2>
         <img src="/{{ post.image }}" height="400px" id="post_img"><br>
         <p id="post_body">{{ post.body }}</p>
-        <a id="like" data-url="/post{{ post.id }}/"><img id="like_img" src="" width="35px"></a>
+        <a id="like" data-url="/post/{{ post.id }}/"><img id="like_img" src="" width="35px"></a>
         <p id="likes">{{ like_amount }}</p>
-
-        <div id="comments">
+    </div>
+    <div id="comments">
+        {% csrf_token %}
+        <input type="text" id="id_body" placeholder="Add Comment">
+        <button id="add" data-url="/post/{{ post.id }}/">Add</button>
+        <div class="comments">
             {% for c in comments %}
             <p class="comment">{{ c.user.username }}<br>{{ c.body }} <a class="comment_like" id='{{ c.id }}' data-url="/post{{ post.id }}/" data-id="{{ c.id }}">Like</a></p>
             {% endfor %}
         </div>
-
-        {% csrf_token %}
-        <input type="text" id="id_body" placeholder="Add Comment">
-        <button id="add" data-url="/post{{ post.id }}/">Add</button>
     </div>
 </body>
 </html>

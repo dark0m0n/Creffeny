@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} - Profile</title>
+    <link rel="stylesheet" href="/static/css/profile.css">
+    <link rel="icon" type="image/x-icon" href="/static/icons/sociable_saturn.png">
+</head>
+<body>
+    <div id="header">
+        <div class="Creffeny">
+            <a href="{% url 'home' %}">
+                <img src="/static/icons/sociable_saturn.png" alt="Creffeny" id="Creffeny">
+            </a>
+        </div>
+    </div>
+    <div id="navigation">
+        <ul>
+            <li id="ico"><img src="" width="25px"></li>
+            <li id="nhome"><a href="{% url 'home' %}">Home</a></li>
+            <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
+            <li id="nlog"><a href="{% url 'login' %}">Log in</a></li>
+            <li id="nreg"><a href="{% url 'register' %}">Sing up</a></li>
+            <li id="nout"><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div id="content">
+        <img id="profile_image" src="/{{ profile.profile_image }}" height="250px" width="250px">
+        <h1 id="username">{{ user.username }}</h1>
+    </div>
+    <div id="posts">
+        {% for p in posts %}
+        <span>
+            <a href="/post/{{ p.id }}">
+                <img height="250px" src="/{{ p.image }}">
+                <p>{{ p.title }}</p>
+            </a>
+        </span>
+        {% endfor %}
+    </div>
+</body>
+</html>

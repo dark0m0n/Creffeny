@@ -30,9 +30,9 @@ function addLike(){
             'success': function(data){
                 document.getElementById('likes').innerHTML = data['like_amount'];
                 if (data['is_like'] == 1){
-                    document.getElementById('like_img').src = '/static/like_on.png';
+                    document.getElementById('like_img').src = '/static/icons/like_on.png';
                 }else{
-                    document.getElementById('like_img').src = '/static/like_off.png';
+                    document.getElementById('like_img').src = '/static/icons/like_off.png';
                 }
             }
         })
@@ -53,9 +53,9 @@ $(document).ready(function(){
         },
         'success': function(data){
             if (data['is_like'] == 1){
-                document.getElementById('like_img').src = '/static/like_on.png';
+                document.getElementById('like_img').src = '/static/icons/like_on.png';
             }else{
-                document.getElementById('like_img').src = '/static/like_off.png';
+                document.getElementById('like_img').src = '/static/icons/like_off.png';
             }
         }
     })
