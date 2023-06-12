@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from Creffeny.models import Post, Comment, Like, ProfileImage
+from Creffeny.models import Post, Comment, Like, ProfileImage, Dislike
 from Creffeny.forms import Registration, LoginForm
 from django.contrib.auth.models import User
 
@@ -9,15 +9,21 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.files import File
 
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LogoutView, LoginView
 
 from pathlib import Path
+import random
 
 
-class IndexView(ListView):
+@method_decorator(login_required(login_url='/registration'), name='dispatch')
+class IndexView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'index.html'
     context_object_name = 'posts'
@@ -28,6 +34,12 @@ class IndexView(ListView):
         context['user'] = self.request.user
         context['profile'] = ProfileImage.objects.get(user=self.request.user)
         return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        posts = list(queryset)
+        random.shuffle(posts)
+        return posts
 
 
 class AddPostView(TemplateView):
@@ -51,7 +63,8 @@ class AddPostView(TemplateView):
         return JsonResponse(image, safe=False)
 
 
-class PostView(TemplateView):
+@method_decorator(login_required(login_url='/registration'), name='dispatch')
+class PostView(LoginRequiredMixin, TemplateView):
     template_name = 'posts.html'
 
     def post(self, request, **kwargs):
@@ -60,32 +73,98 @@ class PostView(TemplateView):
             post = Post.objects.get(id=self.kwargs['pk'])
 
             if 'text' in data.keys():
-                comment = Comment(user=user, post=post, body=data['text'])
-                comment.save()
-                result = render_to_string('comment.html', {'user': user, 'comment': comment})
-                return JsonResponse(result, safe=False)
+                if data['text'] == '':
+                    pass
+                else:
+                    comment = Comment(user=user, post=post, body=data['text'])
+                    comment.save()
+                    result = render_to_string('comment.html', {'c': comment})
+                    return JsonResponse(result, safe=False)
             
             if 'like' in data.keys():
                 likes = Like.objects.filter(post=post)
+                dislikes = Dislike.objects.filter(post=post)
                 for like in likes:
                     if like.user == user:
                         like.delete()
                         like_info = 0
+                        for dislike in dislikes:
+                            if dislike.user == user:
+                                dislike_info = 1
+                                break
+                        else:
+                            dislike_info = 0
                         break
                 else:
                     like = Like(user=user, post=post)
                     like.save()
                     like_info = 1
-                return JsonResponse({'like_amount': len(Like.objects.filter(post=post)), 'is_like': like_info}, safe=False)
-            
+                    for dislike in dislikes:
+                        if dislike.user == user:
+                            dislike.delete()
+                            dislike_info = 0
+                            break
+                    else:
+                        dislike_info = 0
+                return JsonResponse(
+                    {
+                        'like_amount': len(Like.objects.filter(post=post)),
+                        'is_like': like_info,
+                        'dislike_amount': len(Dislike.objects.filter(post=post)),
+                        'is_dislike': dislike_info
+                    },
+                    safe=False)
+
+            if 'dislike' in data.keys():
+                likes = Like.objects.filter(post=post)
+                dislikes = Dislike.objects.filter(post=post)
+                for dislike in dislikes:
+                    if dislike.user == user:
+                        dislike.delete()
+                        dislike_info = 0
+                        for like in likes:
+                            if like.user == user:
+                                like_info = 1
+                                break
+                        else:
+                            like_info = 0
+                        break
+                else:
+                    dislike = Dislike(user=user, post=post)
+                    dislike.save()
+                    dislike_info = 1
+                    for like in likes:
+                        if like.user == user:
+                            like.delete()
+                            like_info = 0
+                            break
+                    else:
+                        like_info = 0
+                return JsonResponse(
+                    {
+                        'dislike_amount': len(Dislike.objects.filter(post=post)),
+                        'is_dislike': dislike_info,
+                        'like_amount': len(Like.objects.filter(post=post)),
+                        'is_like': like_info
+                    },
+                    safe=False)
+
             if 'is_like' in data.keys():
                 likes = Like.objects.filter(post=post)
                 for like in likes:
                     if like.user == user:
                         return JsonResponse({'is_like': 1}, safe=False)
                 else:
-                    return JsonResponse({'is_like': 0}, safe=False)        
+                    return JsonResponse({'is_like': 0}, safe=False)
 
+            if 'is_dislike' in data.keys():
+                dislikes = Dislike.objects.filter(post=post)
+                for dislike in dislikes:
+                    if dislike.user == user:
+                        return JsonResponse({'is_dislike': 1}, safe=False)
+                else:
+                    return JsonResponse({'is_dislike': 0}, safe=False)
+            
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = Post.objects.get(id=self.kwargs['pk'])
@@ -94,6 +173,9 @@ class PostView(TemplateView):
         context['comments'] = comment
         context['title'] = f'Creffeny - {post.title}'
         context['like_amount'] = len(Like.objects.filter(post=post))
+        context['profile'] = ProfileImage.objects.get(user=self.request.user)
+        context['post_profile'] = ProfileImage.objects.get(user=post.user)
+        context['dislike_amount'] = len(Dislike.objects.filter(post=post))
         return context
 
 
@@ -108,12 +190,12 @@ class Login(LoginView):
     redirect_authenticated_user = True
     form_class = LoginForm
 
-
 class Logout(LogoutView):
     pass
 
 
-class ProfileView(TemplateView):
+@method_decorator(login_required(login_url='/registration'), name='dispatch')
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'profile.html'
 
     def get_context_data(self, **kwargs):
@@ -121,7 +203,8 @@ class ProfileView(TemplateView):
         user = User.objects.get(username=self.kwargs['username'])
         context['user'] = user
         context['posts'] = Post.objects.filter(user=user)
-        context['profile'] = ProfileImage.objects.get(user=user)
+        context['profile'] = ProfileImage.objects.get(user=self.request.user)
+        context['p_profile'] = ProfileImage.objects.get(user=user)
         return context
 
     def post(self, request, **kwargs):

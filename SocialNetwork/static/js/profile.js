@@ -20,7 +20,7 @@ function addText(){
             'processData': false,
             'contentType': false,
             'success': function(data) {
-                document.getElementById('add_img').src = data;
+                document.getElementById('add_img').src = `/${data}`;
             }
         })
 

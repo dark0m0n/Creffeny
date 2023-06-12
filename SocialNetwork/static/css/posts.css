@@ -13,9 +13,10 @@ html
 
 #comments
 {
-    margin-left: 100px;
-    margin-right: 100px;
+    position: absolute;
     text-align: center;
+    transform: translate(1200px, -550px);
+    width: 450px;
 }
 
 #header { width: 100%; }
@@ -32,16 +33,37 @@ html
 
 h2 { text-align: center; font-size: 30px; }
 
-h5 { font-size: 30px; text-align: end; }
+#post_img
+{
+    display: block;
+    margin: auto;
+    max-width: 711px;
+    overflow: hidden;
+    object-fit: cover;
 
-#post_img { display: block; margin: auto; }
+}
 
 #post_body { text-align: center; }
 
-#likes
+#like
 {
-    transform: translate(40px, -40px);
+    display: block;
+    position: absolute;
+    transform: translate(1175px, -590px);
+    cursor: pointer;
 }
+
+#likes { transform: translate(1215px, -598px); position: absolute; }
+
+#dislike
+{
+    display: block;
+    position: absolute;
+    transform: translate(1295px, -590px);
+    cursor: pointer;
+}
+
+#dislikes { transform: translate(1335px, -598px); position: absolute; }
 
 #id_body
 {
@@ -67,15 +89,15 @@ h5 { font-size: 30px; text-align: end; }
 .comment
 {
     width: 300px;
+    max-width: 300px;
     display: block;
     margin-left: auto;
     margin-right: auto;
     text-align: start;
+    word-wrap: break-word;
 }
 
 ul { list-style-type: square; }
-
-#navigation { overflow: hidden; }
 
 p, a, h1, h2, h3, h5, h6 { color: white; }
 
@@ -83,19 +105,162 @@ a:link { text-decoration: none; }
 
 #addpost:hover { cursor: pointer; }
 
-#navigation ul
+#profile_image
 {
-    list-style-type: none;
-    margin: auto;
-    width: 35%;
-    background: none;
-    border-width: 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 100%;
+    overflow: hidden;
+    object-fit: cover;
 }
 
-#navigation li
+#post_profile
 {
-    float: left;
-	display: block;
-	padding: 5px 10px;
-    margin-right: 15px;
+    display: block;
+    border-radius: 100%;
+    overflow: hidden;
+    object-fit: cover;
 }
+
+#a_profile
+{
+    display: block;
+    position: absolute;
+    transform: translate(90px, -500px);
+}
+
+h5 { font-size: 22px; }
+
+#navigator { width: 93%; position: relative; }
+
+.user-menu
+{
+    position: relative;
+    width: 100px;
+    margin-left: auto;
+    transform: translate(0px, -200px);
+}
+
+.user-menu img
+{
+    border-radius: 100%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+#user-menu-toggle
+{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+#user-menu-items
+{
+    display: block;
+    position: absolute;
+    background-color: rgb(65, 65, 65);
+    padding: 10px;
+    border: 1px solid #e1e4e8;
+    border-radius: 5px;
+    list-style: none;
+}
+
+#user-menu-items li { margin-bottom: 5px; }
+
+#user-menu-items li a
+{
+    text-decoration: none;
+    color: #fff;
+}
+
+#user-menu-items li a:hover { text-decoration: underline; }
+
+dialog
+{
+    width: 875px;
+    height: 575px;
+    border: 1px solid #e1e4e8;
+    border-radius: 50px;
+    background-color: rgb(65, 65, 65);
+    top: 0%;
+}
+
+dialog::backdrop { background: rgba(114, 114, 114, 0.5); }
+
+#add_text { align-items: center; }
+
+#add_img
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+}
+
+#post_text
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(129, 126, 126);
+    border-radius: 20px;
+    border-width: 7px;
+    border-color: rgb(129, 126, 126);
+    font: normal 14px "Trebuchet MS", "Lucida Grande", Verdana, Georgia, Sans-Serif;
+    color: white;
+}
+
+#select_photo
+{
+    display: block;
+    margin: auto;
+}
+
+.submit
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    background-color: rgb(129, 126, 126);
+    color: white;
+    width: 75px;
+    border-radius: 15px;
+    font: normal 16px "Trebuchet MS", "Lucida Grande", Verdana, Georgia, Sans-Serif;
+}
+
+#post_title
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    border-radius: 15px;
+    background-color: rgb(129, 126, 126);
+    text-align: center;
+    width: 150px;
+}
+
+.close
+{
+    position: absolute;
+    transform: translate(850px, -17px);
+    color: white;
+    background-color: rgb(65, 65, 65);
+    border-color: rgb(65, 65, 65);
+    font-size: 25px;
+}
+
+#add_text .close
+{
+    position: absolute;
+    color: white;
+    background-color: rgb(65, 65, 65);
+    border-color: rgb(65, 65, 65);
+    font-size: 25px;
+    transform: translate(850px, -570px);
+}
+
+#post { transform: translate(0px, -130px); }

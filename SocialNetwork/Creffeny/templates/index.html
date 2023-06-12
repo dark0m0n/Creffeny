@@ -16,20 +16,19 @@
             </a>
         </div>
     </div>
-    <div id="navigation">
-        <ul>
-            <li id="ico"><img src="" width="25px"></li>
-            <li id="nhome"><a href="{% url 'home' %}">Home</a></li>
-            <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
-            <li id="nlog"><a href="{% url 'login' %}">Log in</a></li>
-            <li id="nreg"><a href="{% url 'register' %}">Sing up</a></li>
-            <li id="nout"><a href="/logout">Logout</a></li>
-            <li id="profile">
-                <a href="/profile/{{ user.username }}">
-                    <img id="profile_image" src="/{{ profile.profile_image }}" height="50px" width="50px">
-                </a>
-            </li>
-        </ul>
+    <div id="navigator">
+        <div class="user-menu">
+            <details id="user-menu-toggle">
+                <summary>
+                    <img src="/{{ profile.profile_image }}" height="80px" width="80px">
+                </summary>
+                    <ul id="user-menu-items">
+                <li><a href="/profile/{{ user.username }}">Profile</a></li>
+                <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
+                <li><a href="/logout">Log out</a></li>
+            </ul>
+            </details>
+        </div>
     </div>
     {% csrf_token %}
     <div id="content">
@@ -44,12 +43,14 @@
     </div>
     <dialog id="add_photo">
         <input type="file" id="select_photo">
+        <button class="close">X</button>
     </dialog>
     <dialog id="add_text">
         <img src="" id="add_img" height="315px"><br>
         <input type="text" id="post_title" placeholder="Post Title"><br>
         <textarea cols="40" rows="7" id="post_text"></textarea>
         <input class="submit" type="submit" value="Post">
+        <button class="close">X</button>
     </dialog>
 </body>
 </html>
