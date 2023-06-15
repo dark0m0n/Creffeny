@@ -36,6 +36,17 @@ class ProfileImage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
+class Chat(models.Model):
+    members = models.ManyToManyField(User, related_name='members')
+
+
+class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    body = models.CharField(max_length=10000)
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+
+
 @receiver(models.signals.post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:

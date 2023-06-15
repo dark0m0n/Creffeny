@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from Creffeny.models import Post, Comment, Like, ProfileImage, Dislike
-from Creffeny.forms import Registration, LoginForm
+from Creffeny.models import Post, Comment, Like, ProfileImage, Dislike, Chat, Message
+from Creffeny.forms import Registration, LoginForm, ChatForm
 from django.contrib.auth.models import User
 
 from django.urls import reverse_lazy
@@ -9,13 +9,14 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.files import File
 
+from django.utils.translation import gettext as _
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic.list import ListView
-from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LogoutView, LoginView
 
 from pathlib import Path
@@ -113,7 +114,8 @@ class PostView(LoginRequiredMixin, TemplateView):
                         'dislike_amount': len(Dislike.objects.filter(post=post)),
                         'is_dislike': dislike_info
                     },
-                    safe=False)
+                    safe=False
+                )
 
             if 'dislike' in data.keys():
                 likes = Like.objects.filter(post=post)
@@ -147,7 +149,8 @@ class PostView(LoginRequiredMixin, TemplateView):
                         'like_amount': len(Like.objects.filter(post=post)),
                         'is_like': like_info
                     },
-                    safe=False)
+                    safe=False
+                )
 
             if 'is_like' in data.keys():
                 likes = Like.objects.filter(post=post)
@@ -164,6 +167,36 @@ class PostView(LoginRequiredMixin, TemplateView):
                         return JsonResponse({'is_dislike': 1}, safe=False)
                 else:
                     return JsonResponse({'is_dislike': 0}, safe=False)
+
+            if 'comment_like' in data.keys():
+                comment = Comment.objects.get(id=data['comment_id'])
+                likes = Like.objects.filter(comment=comment)
+                for like in likes:
+                    if like.user == user:
+                        like.delete()
+                        clike_info = 0
+                        break
+                else:
+                    like = Like(user=user, comment=comment)
+                    like.save()
+                    clike_info = 1
+                return JsonResponse(
+                    {
+                        'comment_like_amount': len(Like.objects.filter(comment=comment)),
+                        'is_comment_like': clike_info
+                    },
+                    safe=False
+                )
+
+            if 'is_comment_like' in data.keys():
+                comment = Comment.objects.get(id=data['comment_id'])
+                likes = Like.objects.filter(comment=comment)
+                for like in likes:
+                    if like.user == user:
+                        return JsonResponse({'is_comment_like': 1}, safe=False)
+                else:
+                    return JsonResponse({'is_comment_like': 0}, safe=False)
+
             
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -205,7 +238,81 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['posts'] = Post.objects.filter(user=user)
         context['profile'] = ProfileImage.objects.get(user=self.request.user)
         context['p_profile'] = ProfileImage.objects.get(user=user)
+        if user == self.request.user:
+            context['change_profile'] = 'Change image'
+            context['change_profile_id'] = 'change_img'
+        else:
+            context['change_profile'] = 'Message'
+            context['change_profile_id'] = 'messageto'
         return context
 
     def post(self, request, **kwargs):
         pass
+
+
+class ChengeProfileImage(UpdateView):
+    model = ProfileImage
+    def post(self, request):
+        data = request.POST
+        user = self.request.user
+        image = f'static/profile_images/{user}_profile.png'
+
+        if 'changed' in data.keys():
+            path = Path(image)
+            with path.open(mode='rb') as f:
+                file = File(f, name=path.name)
+                profile = ProfileImage.objects.get(user=user)
+                profile.profile_image = file
+                profile.save()
+        if 'change_img' in data.keys():
+            data = request.FILES['file']
+            with open(image, 'wb') as file:
+                file.write(data.read())
+        return JsonResponse(image, safe=False)
+
+
+class StartChatView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        user = self.request.user
+        user1 = User.objects.get(id=self.kwargs['user_id'])
+        for c in Chat.objects.all():
+            if user in c.members.all() and user1 in c.members.all():
+                self.url = '/chats'
+                break
+        else:
+            chat = Chat()
+            chat.save()
+            chat.members.add(user, user1)
+            self.url = '/chats'
+        return super().get_redirect_url(*args, **kwargs)
+
+
+class ChatsView(TemplateView):
+    template_name = 'chats.html'
+
+    def post(self, request):
+        data_post = request.POST
+        user = self.request.user
+        chat = Chat.objects.get(id=data_post['chat'])
+        if 'message' in data_post.keys():
+            message = Message(user=user, chat=chat, body=data_post['message'])
+            message.save()
+            return JsonResponse({'message': message.body}, safe=False)
+        messages = Message.objects.filter(chat=chat)
+        form = ChatForm()
+        result = render_to_string('chat.html', {'messages': messages, 'form': form, 'chat': chat, 'user': user})
+        return JsonResponse(result, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        chats = []
+        for c in Chat.objects.all():
+            if user in c.members.all():
+                for u in c.members.all():
+                    if u != user:
+                        chats.append([c, u])
+        context['profile'] = user
+        context['chats'] = chats
+        context['title'] = _('Chat')
+        return context

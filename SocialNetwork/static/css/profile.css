@@ -175,3 +175,46 @@ dialog::backdrop { background: rgba(114, 114, 114, 0.5); }
     font-size: 25px;
     transform: translate(850px, -570px);
 }
+
+#change_img
+{
+    position: absolute;
+    left: 50%;
+    transform: translate(70%, 0px);
+    color: #fff;
+    background-color: rgb(65, 65, 65);
+    border: 1px solid #e1e4e8;
+    border-radius: 15px;
+}
+
+#changed_profile_img
+{
+    display: block;
+    margin: auto;
+    height: 315px;
+    width: 315px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+#change_profile_img_1 .close, #change_profile_img_2 .close { transform: translate(850px, 5px); }
+
+#change_profile
+{
+    display: block;
+    margin: auto;
+    transform: translate(0px, 50px);
+}
+
+.submit_img
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    background-color: rgb(129, 126, 126);
+    color: white;
+    width: 75px;
+    border-radius: 15px;
+    font: normal 16px "Trebuchet MS", "Lucida Grande", Verdana, Georgia, Sans-Serif;
+}

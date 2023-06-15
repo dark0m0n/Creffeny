@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from Creffeny.models import Message
 
 
 class Registration(UserCreationForm):
@@ -30,3 +31,10 @@ class LoginForm(AuthenticationForm):
                 'placeholder': 'Password'
             })
         }
+
+
+class ChatForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['body']
+        widgets = {'body': forms.TextInput(attrs={'class': "form_msg", 'placeholder': 'Type'})}

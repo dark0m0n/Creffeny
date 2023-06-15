@@ -1,11 +1,11 @@
 function addPost() {
-    $('#addpost').click(function() {
-        document.getElementById('add_photo').showModal()
+    $('#addpost').click(function(){
+        document.getElementById('add_photo').showModal();
     })
 }
 
 function addText(){
-    $('#select_photo').change(function() {
+    $('#select_photo').change(function(){
         var formData = new FormData();
 
         formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
@@ -19,7 +19,7 @@ function addText(){
             'data': formData,
             'processData': false,
             'contentType': false,
-            'success': function(data) {
+            'success': function(data){
                 document.getElementById('add_img').src = `/${data}`;
             }
         })
@@ -49,8 +49,58 @@ function createPost(){
 
 function closeDialogs(){
     $('.close').click(function(){
-        document.getElementById('add_photo').close()
-        document.getElementById('add_text').close()
+        document.getElementById('add_photo').close();
+        document.getElementById('add_text').close();
+        document.getElementById('change_profile_img_1').close();
+        document.getElementById('change_profile_img_2').close();
+    })
+}
+
+function changeProfileImage1(){
+    $('#change_img').click(function(){
+        document.getElementById('change_profile_img_1').showModal();
+    })
+}
+
+function changeProfileImage2(){
+    $('#change_profile').change(function(){
+        var formData = new FormData();
+
+        formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+        formData.append('file', document.getElementById('change_profile').files[0]);
+        formData.append('change_img', true);
+
+        $.ajax('/change/', {
+            'type': 'POST',
+            'async': true,
+            'dataType': 'json',
+            'data': formData,
+            'processData': false,
+            'contentType': false,
+            'success': function(data){
+                document.getElementById('changed_profile_img').src = `/${data}`;
+            }
+        })
+
+        document.getElementById('change_profile_img_1').close();
+        document.getElementById('change_profile_img_2').showModal();
+    })
+}
+
+function change_profile_img_3(){
+    $('.submit_img').click(function(){
+      $.ajax('/change/', {
+        'type': 'POST',
+        'async': true,
+        'dataType': 'json',
+        'data': {
+            'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+            'changed': 1
+        },
+        'success': function(data){
+            window.location.reload();
+        }
+    })  
     })
 }
 
@@ -59,4 +109,7 @@ $(document).ready(function() {
     addText();
     createPost();
     closeDialogs();
+    changeProfileImage1();
+    changeProfileImage2();
+    change_profile_img_3();
 })

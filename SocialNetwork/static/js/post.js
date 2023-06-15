@@ -123,6 +123,30 @@ function createPost(){
     })
 }
 
+function addCommentLike(){
+    $('.comment_like').click(function(){
+        let btn = $(this);
+        $.ajax(btn.data('url'), {
+            'type': 'POST',
+            'async': true,
+            'dataType': 'json',
+            'data': {
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                'comment_like': 1,
+                'comment_id': btn.data('id')
+            },
+            'success': function(data){
+                $('.comment_likes').innerHTML = data['comment_like_amount'];
+                if (data['is_comment_like'] == 1){
+                    $('.comment_like').src = '/static/icons/like_on.png';
+                }else{
+                    $('.comment_like').src = '/static/icons/like_off.png';
+                }
+            }
+        })
+    })
+}
+
 function closeDialogs(){
     $('.close').click(function(){
         document.getElementById('add_photo').close()
@@ -169,6 +193,24 @@ $(document).ready(function(){
                 document.getElementById('dislike_img').src = '/static/icons/dislike_on.png';
             }else{
                 document.getElementById('dislike_img').src = '/static/icons/dislike_off.png';
+            }
+        }
+    })
+
+    $.ajax($('.comment_like').data('url'), {
+        'type': 'POST',
+        'async': true,
+        'dataType': 'json',
+        'data': {
+            'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+            'is_comment_like': 1,
+            'comment_id': $('.comment_like').data('id')
+        },
+        'success': function(data){
+            if (data['is_comment_like'] == 1){
+                $('.comment_like').src = '/static/icons/like_on.png';
+            }else{
+                $('.comment_like').src = '/static/icons/like_off.png';
             }
         }
     })

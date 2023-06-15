@@ -53,7 +53,13 @@
         <button id="add" data-url="/post/{{ post.id }}/">Add</button>
         <div class="comments">
             {% for c in comments %}
-            <p class="comment">{{ c.user.username }}<br>{{ c.body }} <a class="comment_like" id='{{ c.id }}' data-url="/post/{{ post.id }}/" data-id="{{ c.id }}">Like</a></p>
+            <p class="comment">
+                {{ c.user.username }}<br>{{ c.body }}
+                <a class="comment_like" id='{{ c.id }}' data-url="/post/{{ post.id }}/" data-id="{{ c.id }}">
+                    <img src="" class="comment_like_img">
+                </a>
+                <p class="comment_likes">{{ comment_like_amount }}</p>
+            </p>
             {% endfor %}
         </div>
     </div>
