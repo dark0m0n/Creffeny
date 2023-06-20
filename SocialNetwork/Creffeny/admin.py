@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from Creffeny.models import Post, Comment, ProfileImage
+from Creffeny.models import Post, Comment, ProfileImage, Follow
 
 # Register your models here.
 @admin.register(Post)
@@ -16,3 +16,7 @@ class Admin(admin.ModelAdmin):
 @admin.register(ProfileImage)
 class Admin(admin.ModelAdmin):
     list_display = ['user', 'profile_image']
+
+@admin.register(Follow)
+class Admin(admin.ModelAdmin):
+    list_display = ['user', 'follow']

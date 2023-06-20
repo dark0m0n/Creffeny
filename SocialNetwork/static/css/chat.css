@@ -1,0 +1,95 @@
+.body_back
+{
+    background-color: #333;
+    font: normal 17px "Trebuchet MS", "Lucida Grande", Verdana, Georgia, Sans-Serif;
+    color: #fff;
+}
+
+.profile_link
+{
+    font-size: 25px;
+    text-decoration: none;
+    color: #fff;
+}
+
+.profile_link:hover { text-decoration: underline; color: #fff; }
+
+.profile-image
+{
+    border-radius: 100%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.form_msg {
+    outline: none;
+    width: 90%;
+    height: 30px;
+    background-color: black;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid white;
+    padding: 20px;
+}
+
+.u_msg {
+    padding: 0.2em;
+    background-color: #1E62FF;
+    border-radius: 10px;
+    color: white;
+    display: inline-block;
+}
+
+.msg {
+    padding: 0.2em;
+    color: white;
+    background-color: #b0b0b2;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.btn_snd {
+    font-size: 16px;
+    outline: none;
+    text-decoration: none;
+    color: white;
+    border: 0px;
+    background-color: #333;
+    font-weight: bold;
+}
+
+.btn_snd:hover, .btn_snd:active {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 3000px) {
+    .chats {
+        width: 50%;
+        top: 70px;
+        height: 100%;
+        border-right: 1px solid #404040;
+        align-items: center;
+        overflow-y: scroll;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .chats {
+        width: 50%;
+        height: 100%;
+        top: 70px;
+        border-right: 1px solid #404040;
+        align-items: center;
+        overflow-y: scroll;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .chats {
+        width: 50%;
+        height: 100%;
+        top: 70px;
+        border-right: 1px solid #404040;
+        overflow-y: scroll;
+    }
+}

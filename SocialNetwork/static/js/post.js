@@ -75,13 +75,13 @@ function addDisike(){
 }
 
 function addPost() {
-    $('#addpost').click(function() {
-        document.getElementById('add_photo').showModal()
+    $('#addpost').click(function(){
+        document.getElementById('add_photo').showModal();
     })
 }
 
 function addText(){
-    $('#select_photo').change(function() {
+    $('#select_photo').change(function(){
         var formData = new FormData();
 
         formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
@@ -123,6 +123,37 @@ function createPost(){
     })
 }
 
+function deletePostDialog(){
+    $('#delete_post_btn').click(function(){
+        document.getElementById('delete_post').showModal();
+    })
+}
+
+function deletePostClose(){
+    $('#delete-post-no').click(function(){
+        document.getElementById('delete_post').close();
+    })
+}
+
+function deletePost(){
+    $('#delete-post-yes').click(function(){
+        let btn = $(this);
+        window.location.replace(btn.data('home'));
+        $.ajax(btn.data('url'), {
+            'type': 'POST',
+            'async': true,
+            'dataType': 'json',
+            'data': {
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                'delete_post': 'delete_post_true'
+            },
+            'success': function(data){
+                console.log(data);
+            }
+        })
+    })
+}
+
 function addCommentLike(){
     $('.comment_like').click(function(){
         let btn = $(this);
@@ -149,8 +180,9 @@ function addCommentLike(){
 
 function closeDialogs(){
     $('.close').click(function(){
-        document.getElementById('add_photo').close()
-        document.getElementById('add_text').close()
+        document.getElementById('add_photo').close();
+        document.getElementById('add_text').close();
+        document.getElementById('delete_post').close();
     })
 }
 
@@ -162,6 +194,9 @@ $(document).ready(function(){
     addText();
     createPost();
     closeDialogs();
+    deletePostDialog();
+    deletePostClose();
+    deletePost();
     
     $.ajax($('#like').data('url'), {
         'type': 'POST',
@@ -211,6 +246,20 @@ $(document).ready(function(){
                 $('.comment_like').src = '/static/icons/like_on.png';
             }else{
                 $('.comment_like').src = '/static/icons/like_off.png';
+            }
+        }
+    })
+
+    $.ajax($('#post').data('url'), {
+        'type': 'POST',
+        'async': true,
+        'dataType': 'json',
+        'data': {
+            'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        'success': function(data){
+            if (data['can_delete'] == true){
+                document.getElementById('delete_post_btn').innerHTML += 'Delete';
             }
         }
     })

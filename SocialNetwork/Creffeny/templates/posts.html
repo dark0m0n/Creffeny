@@ -24,6 +24,7 @@
                 </summary>
                     <ul id="user-menu-items">
                 <li><a href="/profile/{{ user.username }}">Profile</a></li>
+                <li><a href="/chats">Chats</a></li>
                 <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
                 <li><a href="/logout">Log out</a></li>
             </ul>
@@ -31,10 +32,11 @@
         </div>
     </div>
     <div id="content">
-        <div id="post">
+        <div id="post" data-url="/post/{{ post.id }}/">
             <h2>{{ post.title }}</h2>
             <img src="/{{ post.image }}" height="400px" id="post_img"><br>
             <p id="post_body">{{ post.body }}</p>
+            <a id="delete_post_btn"></a>
         </div>
         <a id="like" data-url="/post/{{ post.id }}/"><img id="like_img" src="" width="35px"></a>
         <p id="likes">{{ like_amount }}</p>
@@ -73,6 +75,13 @@
         <textarea cols="40" rows="7" id="post_text"></textarea>
         <input class="submit" type="submit" value="Post">
         <button class="close">X</button>
+    </dialog>
+    <dialog id="delete_post">
+        <button class="close">X</button>
+        <h3 id="delete-question">You want to delete this post?</h3>
+        <button id="delete-post-yes" data-url="/delete/{{ post.id }}/" data-home="{% url 'home' %}">Yes</button>
+        <button id="delete-post-no">No</button>
+        {% csrf_token %}
     </dialog>
 </body>
 </html>

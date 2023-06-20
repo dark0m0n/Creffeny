@@ -47,6 +47,11 @@ class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
 
 
+class Follow(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    follow = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follow')
+
+
 @receiver(models.signals.post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:

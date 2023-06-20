@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from Creffeny.models import Post, Comment, Like, ProfileImage, Dislike, Chat, Message
 from Creffeny.forms import Registration, LoginForm, ChatForm
@@ -16,7 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView, RedirectView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LogoutView, LoginView
 
 from pathlib import Path
@@ -35,6 +35,7 @@ class IndexView(LoginRequiredMixin, ListView):
         context['user'] = self.request.user
         context['profile'] = ProfileImage.objects.get(user=self.request.user)
         return context
+
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -188,15 +189,18 @@ class PostView(LoginRequiredMixin, TemplateView):
                     safe=False
                 )
 
-            if 'is_comment_like' in data.keys():
-                comment = Comment.objects.get(id=data['comment_id'])
-                likes = Like.objects.filter(comment=comment)
-                for like in likes:
-                    if like.user == user:
-                        return JsonResponse({'is_comment_like': 1}, safe=False)
-                else:
-                    return JsonResponse({'is_comment_like': 0}, safe=False)
+            # if 'is_comment_like' in data.keys():
+            #     comment = Comment.objects.get(id=data['comment_id'])
+            #     likes = Like.objects.filter(comment=comment)
+            #     for like in likes:
+            #         if like.user == user:
+            #             return JsonResponse({'is_comment_like': 1}, safe=False)
+            #     else:
+            #         return JsonResponse({'is_comment_like': 0}, safe=False)
 
+            if post.user == user:
+                return JsonResponse({'can_delete': True}, safe=False)
+                
             
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -303,6 +307,7 @@ class ChatsView(TemplateView):
         result = render_to_string('chat.html', {'messages': messages, 'form': form, 'chat': chat, 'user': user})
         return JsonResponse(result, safe=False)
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -315,4 +320,15 @@ class ChatsView(TemplateView):
         context['profile'] = user
         context['chats'] = chats
         context['title'] = _('Chat')
+        context['avatars'] = ProfileImage.objects.all()
         return context
+
+
+class DeletePost(DeleteView):
+    model = Post
+    success_url = reverse_lazy('home')
+
+    def delete(self, **kwargs):
+        post = Post.objects.get(id=self.kwargs['pk'])
+        url = self.get_success_url()
+        post.delete()
