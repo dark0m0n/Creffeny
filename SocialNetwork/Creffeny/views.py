@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from Creffeny.models import Post, Comment, Like, ProfileImage, Dislike, Chat, Message
+from Creffeny.models import Post, Comment, Like, ProfileImage, Dislike, Chat, Message, Follow
 from Creffeny.forms import Registration, LoginForm, ChatForm
 from django.contrib.auth.models import User
 
@@ -169,35 +169,6 @@ class PostView(LoginRequiredMixin, TemplateView):
                 else:
                     return JsonResponse({'is_dislike': 0}, safe=False)
 
-            if 'comment_like' in data.keys():
-                comment = Comment.objects.get(id=data['comment_id'])
-                likes = Like.objects.filter(comment=comment)
-                for like in likes:
-                    if like.user == user:
-                        like.delete()
-                        clike_info = 0
-                        break
-                else:
-                    like = Like(user=user, comment=comment)
-                    like.save()
-                    clike_info = 1
-                return JsonResponse(
-                    {
-                        'comment_like_amount': len(Like.objects.filter(comment=comment)),
-                        'is_comment_like': clike_info
-                    },
-                    safe=False
-                )
-
-            # if 'is_comment_like' in data.keys():
-            #     comment = Comment.objects.get(id=data['comment_id'])
-            #     likes = Like.objects.filter(comment=comment)
-            #     for like in likes:
-            #         if like.user == user:
-            #             return JsonResponse({'is_comment_like': 1}, safe=False)
-            #     else:
-            #         return JsonResponse({'is_comment_like': 0}, safe=False)
-
             if post.user == user:
                 return JsonResponse({'can_delete': True}, safe=False)
                 
@@ -242,16 +213,50 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['posts'] = Post.objects.filter(user=user)
         context['profile'] = ProfileImage.objects.get(user=self.request.user)
         context['p_profile'] = ProfileImage.objects.get(user=user)
+        context['following'] = len(Follow.objects.filter(user=user))
+        context['followers'] = len(Follow.objects.filter(follow=user))
+        context['self_u'] = self.request.user
         if user == self.request.user:
             context['change_profile'] = 'Change image'
             context['change_profile_id'] = 'change_img'
+            context['change_profile_href'] = '#'
         else:
             context['change_profile'] = 'Message'
             context['change_profile_id'] = 'messageto'
+            context['change_profile_href'] = f'/start_chat/{user.id}/'
         return context
 
     def post(self, request, **kwargs):
-        pass
+        data = request.POST
+        user = User.objects.get(username=self.kwargs['username'])
+
+        if 'follow' in data.keys():
+            follows = Follow.objects.filter(follow=user)
+            for follow in follows:
+                if follow.user == self.request.user:
+                    follow.delete()
+                    follow_info = 0
+                    break
+            else:
+                follow = Follow(user=self.request.user, follow=user)
+                follow.save()
+                follow_info = 1
+            return JsonResponse(
+                {
+                    'followers_len': len(Follow.objects.filter(follow=user)),
+                    'is_follow': follow_info
+                },
+                safe=False
+            )
+        
+        if 'is_follow' in data.keys():
+            follows = Follow.objects.filter(follow=user)
+            for follow in follows:
+                if follow.user == self.request.user:
+                    return JsonResponse({'is_follow': 1}, safe=False)
+            else:
+                return JsonResponse({'is_follow': 0}, safe=False)
+
 
 
 class ChengeProfileImage(UpdateView):
@@ -330,5 +335,5 @@ class DeletePost(DeleteView):
 
     def delete(self, **kwargs):
         post = Post.objects.get(id=self.kwargs['pk'])
-        url = self.get_success_url()
-        post.delete()
+        if post.user == self.request.user:
+            post.delete()

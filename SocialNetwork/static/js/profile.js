@@ -104,6 +104,29 @@ function change_profile_img_3(){
     })
 }
 
+function follow(){
+    $('#follow').click(function(){
+        let btn = $(this);
+        $.ajax(btn.data('url'), {
+            'type': 'POST',
+            'async': true,
+            'dataType': 'json',
+            'data': {
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                'follow': 1
+            },
+            'success': function(data){
+                document.getElementById('followers').innerHTML = 'Followers: ' + data['followers_len'];
+                if (data['is_follow'] == 1){
+                    document.getElementById('follow').innerHTML = 'Followed';
+                }else{
+                    document.getElementById('follow').innerHTML = 'Follow';
+                }
+            }
+        })
+    })
+}
+
 $(document).ready(function() {
     addPost();
     addText();
@@ -112,4 +135,22 @@ $(document).ready(function() {
     changeProfileImage1();
     changeProfileImage2();
     change_profile_img_3();
+    follow();
+
+    $.ajax($('#follow').data('url'), {
+        'type': 'POST',
+            'async': true,
+            'dataType': 'json',
+            'data': {
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                'is_follow': 1
+            },
+            'success': function(data){
+                if (data['is_follow'] == 1){
+                    document.getElementById('follow').innerHTML = 'Followed';
+                }else{
+                    document.getElementById('follow').innerHTML = 'Follow';
+                }
+            }
+    })
 })

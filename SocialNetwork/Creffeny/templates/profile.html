@@ -25,7 +25,7 @@
                     <img src="/{{ profile.profile_image }}" height="80px" width="80px">
                 </summary>
                     <ul id="user-menu-items">
-                <li><a href="/profile/{{ user.username }}">Profile</a></li>
+                <li><a href="/profile/{{ self_u.username }}">Profile</a></li>
                 <li><a href="/chats">Chats</a></li>
                 <li id="nadd"><a id="addpost" data-url="{% url 'home' %}">Add Post</a></li>
                 <li><a href="/logout">Log out</a></li>
@@ -35,7 +35,12 @@
     </div>
     <div id="content">
         <img id="profile_image" src="/{{ p_profile.profile_image }}" height="250px" width="250px">
-        <button id="{{ change_profile_id }}">{{ change_profile }}</button>
+        <a id="{{ change_profile_id }}" href="{{ change_profile_href }}">{{ change_profile }}</a>
+        <p id="following">Following: {{ following }}</p>
+        <p id="followers">Followers: {{ followers }}</p>
+        {% if user != self_u %}
+        <button id="follow" data-url="/profile/{{ user.username }}/">Follow</button>
+        {% endif %}
         <h1 id="username">{{ user.username }}</h1>
     </div>
     <div id="posts">
